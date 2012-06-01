@@ -79,6 +79,8 @@ To set a specific version:
   - /etc/profile.d/gcc-user.sh
 - Does not work with dev-util/colorgcc: dev-util/colorgcc will always pick up
 the system wide GCC.
+- It might be necessary to set LD_LIBRARY_PATH too. Else, libstdc++.so.6 from
+system-wide GCC will be used.
 - There is no indication if the used version is the system-wide version or a
 specified one. If no version is explicitely set, the active version will be
 shown (as reported by gcc-config -c).
