@@ -30,7 +30,9 @@ The usage is relatively simple, as other eselect modules.
     show                      Show the user's current GCC version.
     unset                     Unset user selected GCC version
 
+
 To set a specific version:
+
     $ eselect gcc-user list
     Available gcc versions:
     [1]   4.5.3 *
@@ -51,7 +53,21 @@ To set a specific version:
     COLLECT_GCC=gcc
     COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-pc-linux-gnu/4.7.0/lto-wrapper
     Target: x86_64-pc-linux-gnu
-    Configured with: /var/tmp/portage/sys-devel/gcc-4.7.0/work/gcc-4.7.0/configure --prefix=/usr --bindir=/usr/x86_64-pc-linux-gnu/gcc-bin/4.7.0 --includedir=/usr/lib/gcc/x86_64-pc-linux-gnu/4.7.0/include --datadir=/usr/share/gcc-data/x86_64-pc-linux-gnu/4.7.0 --mandir=/usr/share/gcc-data/x86_64-pc-linux-gnu/4.7.0/man --infodir=/usr/share/gcc-data/x86_64-pc-linux-gnu/4.7.0/info --with-gxx-include-dir=/usr/lib/gcc/x86_64-pc-linux-gnu/4.7.0/include/g++-v4 --host=x86_64-pc-linux-gnu --build=x86_64-pc-linux-gnu --disable-altivec --disable-fixed-point --without-ppl --without-cloog --enable-lto --enable-nls --without-included-gettext --with-system-zlib --disable-werror --enable-secureplt --enable-multilib --with-multilib-list=m32,m64 --enable-libmudflap --disable-libssp --enable-libgomp --with-python-dir=/share/gcc-data/x86_64-pc-linux-gnu/4.7.0/python --enable-checking=release --disable-libgcj --enable-languages=c,c++,fortran --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-clocale=gnu --enable-targets=all --with-bugurl=http://bugs.gentoo.org/ --with-pkgversion='Gentoo 4.7.0 p1.1, pie-0.5.3'
+    Configured with: /var/tmp/portage/sys-devel/gcc-4.7.0/work/gcc-4.7.0/configure
+    --prefix=/usr --bindir=/usr/x86_64-pc-linux-gnu/gcc-bin/4.7.0
+    --includedir=/usr/lib/gcc/x86_64-pc-linux-gnu/4.7.0/include
+    --datadir=/usr/share/gcc-data/x86_64-pc-linux-gnu/4.7.0
+    --mandir=/usr/share/gcc-data/x86_64-pc-linux-gnu/4.7.0/man
+    --infodir=/usr/share/gcc-data/x86_64-pc-linux-gnu/4.7.0/info
+    --with-gxx-include-dir=/usr/lib/gcc/x86_64-pc-linux-gnu/4.7.0/include/g++-v4
+    --host=x86_64-pc-linux-gnu --build=x86_64-pc-linux-gnu --disable-altivec
+    --disable-fixed-point --without-ppl --without-cloog --enable-lto --enable-nls
+    --without-included-gettext --with-system-zlib --disable-werror --enable-secureplt
+    --enable-multilib --with-multilib-list=m32,m64 --enable-libmudflap
+    --disable-libssp --enable-libgomp --with-python-dir=/share/gcc-data/x86_64-pc-linux-gnu/4.7.0/python
+    --enable-checking=release --disable-libgcj --enable-languages=c,c++,fortran --enable-shared
+    --enable-threads=posix --enable-__cxa_atexit --enable-clocale=gnu --enable-targets=all
+    --with-bugurl=http://bugs.gentoo.org/ --with-pkgversion='Gentoo 4.7.0 p1.1, pie-0.5.3'
     Thread model: posix
     gcc version 4.7.0 (Gentoo 4.7.0 p1.1, pie-0.5.3)
 
