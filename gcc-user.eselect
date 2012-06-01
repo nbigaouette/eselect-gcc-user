@@ -1,0 +1,164 @@
+# Copyright 1999-2005 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Id: $
+
+inherit package-manager
+
+DESCRIPTION="User selectable GCC version"
+MAINTAINER="nbigaouette@gmail.com"
+SVN_DATE='$Date: $'
+VERSION="0.1"
+
+sh_file="gcc-user.sh"
+
+init() {
+    local d
+    [[ ${UID} -eq 0 ]] && HOME="${ROOT}/root"
+    d="$(canonicalise "${ROOT}/${HOME}")"
+    d="${d}/.env.d/"
+    user_ev_sh="${d}${sh_file}";
+
+    if [[ ! -d "${d}" ]]; then
+        mkdir "${d}" || die -q "Failed to create ${d}."
+    elif [[ ! -w "${d}" ]]; then
+        die -q "You do not have permission to mkdir ${d}."
+    fi
+    [[ -f "${user_ev_sh}" && ! -w "${user_ev_sh}" ]] \
+        && die -q "You do not have permission to write to ${user_ev_sh}."
+}
+
+var_from_user_envd() {
+    [ ! -f ${user_ev_sh} ] && return 0
+    echo "$(source ${user_ev_sh}; echo ${!1})"
+}
+
+global_version() {
+    gcc-config -c | sed "s|.*-\([0-9].*\)|\1|g"
+}
+
+# User's env file is ready for sourcing for this class
+is_active() {
+    local version
+    if [[ -f "${user_ev_sh}" ]]; then
+        # If file exists, source it
+        version=$(var_from_user_envd ESELECT_USER_GCC)
+    else
+        # Else, compare against global
+        version=$(global_version)
+    fi
+    [ "${version}" == "${1}" ]
+}
+
+
+find_versions() {
+    local f chost=$(envvar sys-devel/binutils CHOST)
+    for f in "${EROOT}"/etc/env.d/gcc/${chost}-[[:digit:]]*; do
+       basename "${f}" | sed "s|.*-\([0-9]\)|\1|g"
+    done
+}
+
+
+### show action ###
+
+describe_show() {
+    echo "Show the user's current GCC version."
+}
+
+do_show() {
+    local i versions=( $(find_versions) ) version=$(global_version)
+
+    init
+
+    write_list_start "Current user's GCC version:"
+    for (( i = 0; i < ${#versions[@]}; i++ )); do
+        if is_active ${versions[i]}; then
+            version=${versions[i]}
+        fi
+    done
+
+    write_kv_list_entry ${version}
+}
+
+### list action ###
+
+describe_list() {
+    echo "List available gcc versions"
+}
+
+do_list() {
+    local i versions=( $(find_versions) )
+
+    init
+
+    write_list_start "Available gcc versions:"
+    for (( i = 0; i < ${#versions[@]}; i++ )); do
+        # highlight the version set by user
+        if is_active ${versions[i]}; then
+            versions[i]=$(highlight_marker "${versions[i]}");
+        fi
+    done
+    write_numbered_list -m "(none found)" "${versions[@]}"
+}
+
+### set action ###
+
+describe_set() {
+    echo "Set a GCC version"
+}
+
+describe_set_parameters() {
+    echo "<version>"
+}
+
+describe_set_options() {
+    echo "version : Version or number to use (from 'list' action)"
+}
+
+do_set() {
+    [[ -z $1 ]] && die -q "You didn't tell me what version to set"
+    [[ $# -gt 1 ]] && die -q "Too many parameters"
+
+    init
+
+    local i version=$1 chost=$(envvar sys-devel/binutils CHOST)
+
+    if is_number "${version}"; then
+        local versions=( $(find_versions) )
+        version=${versions[version-1]}
+    fi
+
+    # Verify that the version exists
+    possible_versions=( $(gcc-config -l | sed "s|\*||g") )
+    version_exists="false"
+    for (( i = 0; i < ${#possible_versions[@]}; i++ )); do
+        if [[ "${chost}-${version}" == "${possible_versions[i]}" ]]; then
+            version_exists="true"
+            break
+        fi
+    done
+    if [[ "${version_exists}" == "false" ]]; then
+        die -q "Version \"${1}\" is not valid!"
+    fi
+
+    new_path=$(echo $PATH | sed "s|\(.*\):/usr/${chost}/gcc-bin/[0-9\.]*:\(.*\)|\1:\2|g")
+    new_path="/usr/${chost}/gcc-bin/${version}:${new_path}"
+    cat > ${user_ev_sh} << EOF
+ESELECT_USER_GCC=${version}
+export PATH=${new_path}
+EOF
+
+    echo "GCC version set to ${version}"
+    echo "Remember to source profile files:"
+    echo "source /etc/profile && source ~/.bashrc"
+}
+
+### unset action ###
+
+describe_unset() {
+    echo "Unset user selected GCC version"
+}
+
+do_unset() {
+    init
+    rm -f ${user_ev_sh}
+}
