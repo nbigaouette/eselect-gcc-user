@@ -148,7 +148,7 @@ export PATH=${new_path}
 EOF
 
     echo "GCC version set to ${version}"
-    echo "Remember to source profile files:"
+    echo "Remember to source profile files (or logout-login) in all opened shell:"
     echo "source /etc/profile && source ~/.bashrc"
 }
 
@@ -161,4 +161,8 @@ describe_unset() {
 do_unset() {
     init
     rm -f ${user_ev_sh}
+
+    echo "GCC is now the default system one."
+    echo "Remember to source profile files (or logout-login) in all opened shell:"
+    echo "source /etc/profile && source ~/.bashrc"
 }
