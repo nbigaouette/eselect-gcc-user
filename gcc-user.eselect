@@ -61,7 +61,7 @@ find_versions() {
 ### show action ###
 
 describe_show() {
-    echo "Show the user's current GCC version."
+    echo "Show the current active GCC version."
 }
 
 do_show() {
@@ -82,7 +82,7 @@ do_show() {
 ### list action ###
 
 describe_list() {
-    echo "List available gcc versions"
+    echo "List available system-wide GCC versions"
 }
 
 do_list() {
@@ -103,7 +103,7 @@ do_list() {
 ### set action ###
 
 describe_set() {
-    echo "Set a GCC version"
+    echo "Set a specific GCC version"
 }
 
 describe_set_parameters() {
