@@ -12,6 +12,8 @@ VERSION="0.1"
 sh_file="gcc-user.sh"
 chost=$(envvar sys-devel/binutils CHOST)
 
+source /etc/profile.d/remove_path_from_list_def.sh
+
 init() {
     local d
     [[ ${UID} -eq 0 ]] && HOME="${ROOT}/root"
@@ -141,11 +143,26 @@ do_set() {
         die -q "Version \"${1}\" is not valid!"
     fi
 
-    new_path=$(echo $PATH | sed "s|\(.*\):/usr/${chost}/gcc-bin/[0-9\.]*:\(.*\)|\1:\2|g")
-    new_path="/usr/${chost}/gcc-bin/${version}:${new_path}"
     cat > ${user_ev_sh} << EOF
 ESELECT_USER_GCC=${version}
-export PATH=${new_path}
+CHOST=${chost}
+
+source /etc/profile.d/remove_path_from_list_def.sh
+
+new_path=\$(remove_path_from_list \${PATH} "/usr/\${CHOST}/gcc-bin/[0-9\.]*")
+new_path="/usr/\${CHOST}/gcc-bin/\${ESELECT_USER_GCC}:\${new_path}"
+# echo "Old PATH:  \${PATH}"
+# echo "New PATH:  \${new_path}"
+export PATH=\${new_path}
+
+new_ld_path=\$(remove_path_from_list "\${LD_LIBRARY_PATH}" "/usr/lib/gcc/\${CHOST}/[0-9\.]*")
+if [[ "\${#new_ld_path}" != "0" ]]; then
+    new_ld_path=":\${new_ld_path}"
+fi
+new_ld_path="/usr/lib/gcc/\${CHOST}/\${ESELECT_USER_GCC}\${new_ld_path}"
+# echo "Old LD: \${LD_LIBRARY_PATH}"
+# echo "New LD: \${new_ld_path}"
+export LD_LIBRARY_PATH=\${new_ld_path}
 EOF
 
     echo "GCC version set to ${version}"
