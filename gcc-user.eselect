@@ -7,7 +7,7 @@ inherit package-manager
 DESCRIPTION="User selectable GCC version"
 MAINTAINER="nbigaouette@gmail.com"
 SVN_DATE='$Date: $'
-VERSION="0.1"
+VERSION="0.2"
 
 sh_file="gcc-user.sh"
 chost=$(envvar sys-devel/binutils CHOST)
