@@ -10,6 +10,7 @@ SVN_DATE='$Date: $'
 VERSION="0.1"
 
 sh_file="gcc-user.sh"
+chost=$(envvar sys-devel/binutils CHOST)
 
 init() {
     local d
@@ -51,7 +52,7 @@ is_active() {
 
 
 find_versions() {
-    local f chost=$(envvar sys-devel/binutils CHOST)
+    local f
     for f in "${EROOT}"/etc/env.d/gcc/${chost}-[[:digit:]]*; do
        basename "${f}" | sed "s|.*-\([0-9]\)|\1|g"
     done
@@ -120,7 +121,7 @@ do_set() {
 
     init
 
-    local i version=$1 chost=$(envvar sys-devel/binutils CHOST)
+    local i version=$1
 
     if is_number "${version}"; then
         local versions=( $(find_versions) )
